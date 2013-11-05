@@ -18,13 +18,20 @@
 require 'redmine'
 require 'redmine/wiki_formatting/markdown/formatter'
 require 'redmine/wiki_formatting/markdown/helper'
+require 'redmine/syntax_highlighting/pygments'
 
+
+Rails.configuration.to_prepare do
+  require_dependency 'application_helper'
+  ApplicationHelper.send(:include, Patches::Pygments::ApplicationHelper)
+end
 
 Redmine::Plugin.register :redmine_redcarpet_formatter do
   name 'Redcarpet Markdown Wiki formatter'
   author 'Mikoto Misaka'
   description 'Markdown wiki formatting by Redcarpet for Redmine'
   version '2.1'
+  requires_redmine :version_or_higher => '2.0.0'
 
   wiki_format_provider 'markdown', Redmine::WikiFormatting::Markdown::Formatter, Redmine::WikiFormatting::Markdown::Helper
 
@@ -33,4 +40,8 @@ Redmine::Plugin.register :redmine_redcarpet_formatter do
     'enable_no_intra_emphasis' => '1',
   }, :partial =>'settings/redmine_redcarpet_formatter_settings'
 
+end
+
+class PygmentsStylesheetHook < Redmine::Hook::ViewListener
+  render_on :view_layouts_base_html_head, :inline => "<%= stylesheet_link_tag 'highlight', :plugin => 'redmine_pygments' %>"
 end

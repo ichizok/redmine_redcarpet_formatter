@@ -22,17 +22,23 @@ require 'redcarpet'
 
 class HTMLwithSyntaxHighlighting < ::Redcarpet::Render::HTML
   def block_code(code, language)
-    if language != nil 
-      "<pre>\n<code class='#{language} syntaxhl'>" \
+    if language != nil
+      uuid = SecureRandom.uuid
+      '<div class="autoscroll">' \
       + Redmine::SyntaxHighlighting.highlight_by_language(code, language) \
-      + "</code>\n</pre>"
-    else 
+        .sub(%r{(?:<pre>)([\s\d]+)(?=</pre>)}) do |nos|
+          nos.gsub(%r{ *(\d+)}, %{<span id="#{uuid}-L\\1" rel="##{uuid}-L\\1">\\&</span>})
+        end \
+      + '</div>'
+    else
       "<pre>\n" + CGI.escapeHTML(code) + "</pre>"
     end
   end
+
   def block_quote(quote)
     "<blockquote>\n" << quote.gsub(/\n([^<])/,'<br>\1') << "</blockquote>\n"
   end
+
   def normal_text(text)
     if !@in_redminelink
       (a, begin_quot, b) = text.partition(':"')
@@ -61,7 +67,7 @@ class HTMLwithSyntaxHighlighting < ::Redcarpet::Render::HTML
       return a
     end
   end
-end  
+end
 
 module Redmine
   module WikiFormatting
@@ -124,13 +130,12 @@ module Redmine
             if line =~ /^(~~~|```)/
               pre = pre == :pre ? :none : :pre
             elsif pre == :none
-              
               level = if line =~ /^(#+)/
                         $1.length
-                      elsif line.strip =~ /^=+$/ 
+                      elsif line.strip =~ /^=+$/
                         line = eval(state).pop + line
                         1
-                      elsif line.strip =~ /^-+$/ 
+                      elsif line.strip =~ /^-+$/
                         line = eval(state).pop + line
                         2
                       else
