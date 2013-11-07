@@ -16,14 +16,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require 'redmine'
-require 'redmine/wiki_formatting/markdown/formatter'
-require 'redmine/wiki_formatting/markdown/helper'
 require 'redmine/syntax_highlighting/pygments'
-
+require 'pygments_stylesheet_hook'
 
 Rails.configuration.to_prepare do
   require_dependency 'application_helper'
-  ApplicationHelper.send(:include, Patches::Pygments::ApplicationHelper)
+  ApplicationHelper.send(:include, PygmentsApplicationHelperPatch)
 end
 
 Redmine::Plugin.register :redmine_redcarpet_formatter do
@@ -38,10 +36,5 @@ Redmine::Plugin.register :redmine_redcarpet_formatter do
   settings :default => {
     'enable_hardwrap' => '1',
     'enable_no_intra_emphasis' => '1',
-  }, :partial =>'settings/redmine_redcarpet_formatter_settings'
-
-end
-
-class PygmentsStylesheetHook < Redmine::Hook::ViewListener
-  render_on :view_layouts_base_html_head, :inline => "<%= stylesheet_link_tag 'highlight', :plugin => 'redmine_pygments' %>"
+  }, :partial => 'settings/redmine_redcarpet_formatter_settings'
 end
