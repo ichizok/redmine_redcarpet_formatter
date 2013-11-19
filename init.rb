@@ -16,12 +16,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require 'redmine'
+require 'redmine/wiki_formatting/markdown/formatter'
+require 'redmine/wiki_formatting/markdown/helper'
 require 'redmine/syntax_highlighting/pygments'
-require 'pygments_stylesheet_hook'
+require 'redcarpet_formatter/pygments_stylesheet_hook'
 
 Rails.configuration.to_prepare do
   require_dependency 'application_helper'
-  ApplicationHelper.send(:include, PygmentsApplicationHelperPatch)
+  ApplicationHelper.send(:include, RedcarpetFormatter::PygmentsApplicationHelperPatch)
 end
 
 Redmine::Plugin.register :redmine_redcarpet_formatter do
