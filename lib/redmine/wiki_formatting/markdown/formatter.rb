@@ -23,11 +23,10 @@ require 'redcarpet'
 class HTMLwithSyntaxHighlighting < ::Redcarpet::Render::HTML
   def block_code(code, language)
     if language != nil
-      uuid = SecureRandom.uuid
       '<div class="autoscroll">' \
       + Redmine::SyntaxHighlighting.highlight_by_language(code, language) \
-        .sub(%r{(?:<pre>)([\s\d]+)(?=</pre>)}) do |nos|
-          nos.gsub(%r{ *(\d+)}, %{<span id="#{uuid}-L\\1" rel="##{uuid}-L\\1">\\&</span>})
+        .sub(%r|(?<=<pre>)([\s\d]+)(?=</pre>)|) do |row|
+          row.gsub(%r| *(\d+)|, '<span>\&</span>')
         end \
       + '</div>'
     else
