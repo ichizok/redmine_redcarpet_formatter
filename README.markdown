@@ -25,6 +25,7 @@ Prerequisites
 
 *  Redmine 1.x, Remine 2.x
 *  Redcarpetr >= 2.0.0b5 - see https://github.com/tanoku/redcarpet
+*  Python >= 2.5 && < 3.0 - for pygments (syntax highlighter)
 
 
 Installation
