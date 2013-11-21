@@ -107,6 +107,6 @@ table.highlighttable tr td pre {
     margin: 0px;
     padding: 0px;
     white-space: pre;
-    font-size: 12px !important;
-    line-height: 16px !important;
+    font-size: 12px;
+    line-height: 16px;
 }

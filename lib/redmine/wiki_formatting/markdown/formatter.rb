@@ -25,9 +25,6 @@ class HTMLwithSyntaxHighlighting < ::Redcarpet::Render::HTML
     if language != nil
       '<div class="autoscroll">' \
       + Redmine::SyntaxHighlighting.highlight_by_language(code, language) \
-        .sub(%r|(?<=<pre>)([\s\d]+)(?=</pre>)|) do |row|
-          row.gsub(%r| *(\d+)|, '<span>\&</span>')
-        end \
       + '</div>'
     else
       "<pre>\n" + CGI.escapeHTML(code) + "</pre>"
